@@ -33,9 +33,9 @@ const getWeather = () => {
         return Object.entries(solData).map(([sol, data]) => {
             return {
                 sol: sol,
-                maxTemp: data.PRE.mx,
-                minTemp: data.PRE.mn,
-                windSpeed: data.PRE.av,
+                maxTemp: data.AT == null ? "N/A" : data.AT.mx,
+                minTemp: data.AT == null ? "N/A" : data.AT.mn,
+                windSpeed: data.HWS == null ? "N/A" : data.HWS.av,
                 windDirectionDegrees: data.WD.most_common == null ? null : data.WD.most_common.compass_degrees,
                 windDirectionCardinal: data.WD.most_common == null ? null : data.WD.most_common.compass_point,
                 date: new Date(data.First_UTC)
@@ -104,14 +104,20 @@ const displayDate = (date) => {
 }
 
 const displayTemperature = (temperature) => {
+    if(temperature == "N/A") {
+        return temperature;
+    }
     let returnTemp = temperature;
     if(!isMetric()) {
-        returnTemp = (temperature - 32) * (5/9)
+        returnTemp = (temperature * 9/5) + 32;
     }
     return Math.round(returnTemp);
 }
 
 const displaySpeed = (speed) => {
+    if(speed == "N/A") {
+        return speed;
+    }
     let returnSpeed = speed;
     if(!isMetric()) {
         returnSpeed = speed / 1.609;
